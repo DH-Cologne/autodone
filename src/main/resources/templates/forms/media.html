@@ -43,6 +43,20 @@
             <label class="form-label">Description for the attached Media</label>
           </div>
         </div>
+        <div th:if="*{file}">
+          <label class="form-label fw-bold" for="downloadStatus">Download Status</label>
+          <div class="form-floating">
+            <p class="form-control-plaintext">File available</p>
+            <label class="form-label">File Download Status</label>
+          </div>
+        </div>
+        <div th:unless="*{file}">
+          <label class="form-label fw-bold" for="downloadStatus">Download Status</label>
+          <div class="form-floating">
+            <p class="form-control-plaintext">File not available</p>
+            <label class="form-label">File Download Status</label>
+          </div>
+        </div>
       </div>
     </div>
   </div>

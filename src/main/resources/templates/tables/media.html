@@ -6,22 +6,28 @@
       <div class="card-body p-0">
         <p th:if="*{description}" th:text="*{description}" class="card-text p-3"></p>
       </div>
-
-      <div class="card-footer d-flex justify-content-end">
-        <a th:href="@{/media(uuid=*{uuid})}" class="btn btn-sm btn-outline-primary me-1">
-          <i class="bi bi-eye-fill"></i>
-        </a>
-        <th:block th:if="${#path} == '/media'">
-          <a th:href="@{/status(uuid=*{status.uuid})}" class="btn btn-sm btn-outline-secondary me-1">
-            <i class="bi bi-list"></i>
+      
+      <div class="card-footer d-flex justify-content-between align-items-center">
+        <div>
+            <i th:classappend="${media.file} ? 'bi bi-check-circle-fill text-success' : 'bi bi-check-circle-fill text-warning'"
+             th:title="${media.file} ? 'Downloaded' : 'Waiting for download'"></i>
+        </div>
+        <div>
+          <a th:href="@{/media(uuid=*{uuid})}" class="btn btn-sm btn-outline-primary me-1">
+        <i class="bi bi-eye-fill"></i>
           </a>
-        </th:block>
-        <form th:action="@{/media}" th:method="post" class="d-inline-block m-0">
-          <input th:value="*{uuid}" name="uuid" type="hidden">
-          <button class="btn btn-sm btn-outline-danger" name="_method" value="delete">
-            <i class="bi bi-trash-fill"></i>
-          </button>
-        </form>
+          <th:block th:if="${#path} == '/media'">
+        <a th:href="@{/status(uuid=*{status.uuid})}" class="btn btn-sm btn-outline-secondary me-1">
+          <i class="bi bi-list"></i>
+        </a>
+          </th:block>
+          <form th:action="@{/media}" th:method="post" class="d-inline-block m-0">
+        <input th:value="*{uuid}" name="uuid" type="hidden">
+        <button class="btn btn-sm btn-outline-danger" name="_method" value="delete">
+          <i class="bi bi-trash-fill"></i>
+        </button>
+          </form>
+        </div>
       </div>
     </div>
   </div>

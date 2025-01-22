@@ -21,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 import de.uoc.dh.idh.autodone.entities.GroupEntity;
 import de.uoc.dh.idh.autodone.services.GroupService;
 import de.uoc.dh.idh.autodone.services.ImportService;
+import de.uoc.dh.idh.autodone.services.MediaDownloadQueue;
+import de.uoc.dh.idh.autodone.services.MediaDownloadTask;
 import de.uoc.dh.idh.autodone.services.StatusService;
 import jakarta.servlet.http.HttpSession;
 
@@ -39,6 +41,9 @@ public class ImportController {
 
 	@Autowired()
 	private StatusService statusService;
+
+	@Autowired()
+    private MediaDownloadQueue mediaDownloadQueue;
 
 	//
 
@@ -83,6 +88,13 @@ public class ImportController {
 			httpSession.removeAttribute("import");
 
 			var save = groupService.save(mapFields(form, group, FORCE));
+
+			for (var status : save.status) {
+				if (status.media.size() > 0) {
+					mediaDownloadQueue.addTask(new MediaDownloadTask(status.media.get(0), status));
+				}
+			}
+
 			return "redirect:/group?uuid=" + save.uuid;
 		}
 	}
