@@ -22,6 +22,7 @@ import de.uoc.dh.idh.autodone.entities.GroupEntity;
 import de.uoc.dh.idh.autodone.services.GroupService;
 import de.uoc.dh.idh.autodone.services.ImportService;
 import de.uoc.dh.idh.autodone.services.StatusService;
+import de.uoc.dh.idh.autodone.utils.SupportedLocales;
 import jakarta.servlet.http.HttpSession;
 
 @Controller()
@@ -48,6 +49,9 @@ public class ImportController {
 		var page = statusService.getPage(params.get("page"), params.get("sort"), group);
 		var alerts = new LinkedMultiValueMap<Integer, String>();
 		var errors = new LinkedMultiValueMap<Integer, String>();
+
+		Map<String, String> languages = SupportedLocales.getLanguages();
+		model.addAttribute("languages", languages);
 
 		group.status.stream().flatMap((s) -> s.exceptions.stream()).sorted((a, b) -> {
 			return ((ParseException) a).getErrorOffset() > ((ParseException) b).getErrorOffset() ? 1 : -1;

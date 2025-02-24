@@ -62,6 +62,10 @@ public class StatusService extends BaseService<StatusEntity> {
 			data.put("media_ids", status.media.stream().map((media) -> media.id).toList());
 		}
 
+		if (status.group.language != null) {
+			data.put("language", status.group.language.getLocale());
+		}
+
 		if (status.group.threaded) {
 			var prev = statusRepository //
 					.findTopByGroupAndDateBeforeAndIdIsNotNullOrderByDateDesc(status.group, status.date);
