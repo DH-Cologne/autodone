@@ -53,7 +53,7 @@ public class ServerEntity {
 	public String description;
 
 	@Transient()
-	public List<Map<String, String>> rules;
+	public List<Map<String, Object>> rules;
 
 	@Transient()
 	public Map<String, Object> thumbnail;

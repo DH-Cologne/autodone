@@ -17,7 +17,6 @@ public class ProjectUtils {
 	private ProjectUtils(BuildProperties buildProperties, EntityManager entityManager) throws Exception {
 		var file = "META-INF/maven/" + buildProperties.getGroup() + "/" + buildProperties.getArtifact() + "/pom.xml";
 		projectModel = new MavenXpp3Reader().read(getClass().getClassLoader().getResourceAsStream(file));
-
 	}
 
 }

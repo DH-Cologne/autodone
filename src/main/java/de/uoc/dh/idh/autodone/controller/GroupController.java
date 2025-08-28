@@ -85,7 +85,7 @@ public class GroupController {
 		var group = new GroupEntity();
 
 		if (form.containsKey("uuid")) {
-			group = groupService.getOne((String) form.get("uuid"));
+			group = groupService.getOne(form.get("uuid"));
 		}
 
 		var save = groupService.save(mapFields(form, group, FORCE));
