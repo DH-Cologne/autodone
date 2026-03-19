@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import de.uoc.dh.idh.autodone.entities.MediaEntity;
+import de.uoc.dh.idh.autodone.entities.StatusEntity;
 import de.uoc.dh.idh.autodone.services.MediaService;
 import de.uoc.dh.idh.autodone.services.StatusService;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller()
 @RequestMapping("/media")
@@ -63,13 +65,20 @@ public class MediaController {
 	//
 
 	@PostMapping()
-	public String post(@RequestBody() MultipartFile file, @RequestParam() Map<String, Object> form) throws Exception {
+	public String post(@RequestBody() MultipartFile file, @RequestParam() Map<String, Object> form, HttpServletResponse resp) throws Exception {
 		var media = new MediaEntity();
 
 		if (form.containsKey("uuid")) {
 			media = mediaService.getOne((String) form.get("uuid"));
 		} else {
-			form.put("status", statusService.getOne((String) form.get("status.uuid")));
+			StatusEntity status = statusService.getOne((String) form.get("status.uuid"));
+			
+			if (status.poll != null) {
+				resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Cannot add media because status already has a poll");
+				return null;
+			}
+
+			form.put("status", status);
 			form.put("contentType", file.getContentType());
 			form.put("file", file.getBytes());
 		}

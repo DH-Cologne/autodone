@@ -1,0 +1,158 @@
+<form th:action="${action}" th:method="post" th:object="${poll}" class="m-0" enctype="multipart/form-data" id="poll-form">
+  <input th:field="*{status.uuid}" th:if="*{status}" type="hidden">
+  <input th:field="*{uuid}" th:if="*{uuid}" type="hidden">
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label class="form-label fw-bold">Poll Options</label>
+      <div id="poll-options">
+        <div th:each="option, iterStat : *{options}" class="form-floating mb-3 poll-option">
+          <input type="text" class="form-control" th:name="|options[${iterStat.index}]|" th:placeholder="|Option ${iterStat.index + 1}|" th:value="${option}" th:required="${iterStat.index < 2}">
+          <label th:text="|Option ${iterStat.index + 1}|">Option 1</label>
+        </div>
+        <div th:if="*{options.size()} < 2" class="form-floating mb-3 poll-option">
+          <input type="text" class="form-control" th:name="|options[1]|" th:placeholder="|Option 2|" required>
+          <label>Option 2</label>
+        </div>
+        <div th:if="*{options.size()} < 4" class="form-floating mb-3 poll-option">
+          <input type="text" class="form-control" th:name="|options[*{options.size()}]|" th:placeholder="|Option *{options.size() + 1}|" th:required="*{options.size()} < 2">
+          <label th:text="|Option *{options.size() + 1}|">Option 1</label>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <label class="form-label fw-bold" for="status.uuid">Poll Attachment</label>
+          <div th:if="*{status}" class="input-group">
+            <div class="form-floating">
+              <input placeholder readonly th:field="*{status.status}" class="form-control">
+              <label class="form-label">Status this Poll is attached to</label>
+            </div>
+            <a th:href="@{/status(uuid=*{status.uuid})}" class="input-group-text d-flex btn btn-outline-primary">
+              <i class="bi bi-eye-fill"></i>
+            </a>
+          </div>
+          <div th:unless="*{status}" class="form-floating">
+            <select placeholder required th:field="*{status.uuid}" class="form-select">
+              <option selected value="">-</option>
+              <option th:each="status : ${status}" th:text="${status.status}" th:value="${status.uuid}"></option>
+            </select>
+            <label class="form-label">Status this Poll is attached to</label>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <label class="form-label fw-bold" for="poll-duration">Poll Duration</label>
+          <div class="form-floating">
+            <select th:field="*{expiresIn}" class="form-select" required>
+              <option value="300">5 minutes</option>
+              <option value="1800">30 minutes</option>
+              <option value="3600">1 hour</option>
+              <option value="21600">6 hours</option>
+              <option value="43200">12 hours</option>
+              <option value="86400">1 day</option>
+              <option value="259200">3 days</option>
+              <option value="604800">7 days</option>
+            </select>
+            <label class="form-label">Poll Duration</label>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <label class="form-label fw-bold">Poll Settings</label>
+          <div class="form-check form-switch">
+            <input th:field="*{multiple}" class="form-check-input" id="multiple" type="checkbox">
+            <input name="multiple" type="hidden" value="false">
+            <label class="form-check-label" for="multiple">
+              <strong>Multiple Choice</strong>
+              <small>(allows multiple options to be selected)</small>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-footer d-flex flex-row-reverse">
+    <button th:text="*{uuid} ? 'Update' : 'Create'" class="btn btn-outline-primary"></button>
+    <th:block th:if="*{uuid}">
+      <button class="btn btn-outline-secondary me-1" type="reset">Reset</button>
+      <button class="btn btn-outline-danger me-1" name="_method" value="delete" formnovalidate>Delete</button>
+    </th:block>
+  </div>
+</form>
+
+<style>
+  .poll-option input:placeholder-shown {
+    border-style: dashed;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const maxOptions = 4;
+
+    const form = document.getElementById('poll-form');
+    const pollOptions = document.getElementById('poll-options');
+    const initialPollOptionsState = pollOptions.innerHTML;
+
+    function addOptionField(index) {
+      const newOption = document.createElement('div');
+      newOption.classList.add('form-floating', 'mb-3', 'poll-option');
+      newOption.innerHTML = `
+        <input type="text" class="form-control" name="options[${index}]" placeholder="Option ${index + 1}">
+        <label>Option ${index + 1}</label>
+      `;
+      pollOptions.appendChild(newOption);
+    }
+
+    function updateOptionFields() {
+      const optionFields = pollOptions.querySelectorAll('.poll-option');
+      optionFields.forEach((field, index) => {
+        const input = field.querySelector('input');
+        input.name = `options[${index}]`;
+        input.placeholder = `Option ${index + 1}`;
+        field.querySelector('label').textContent = `Option ${index + 1}`;
+        input.required = index < 2 || input.value !== '';
+      });
+    }
+
+    function handleInput(event) {
+      const optionFields = pollOptions.querySelectorAll('.poll-option');
+      const lastField = optionFields[optionFields.length - 1];
+      const lastInput = lastField.querySelector('input');
+
+      optionFields.forEach((field, index) => {
+        const input = field.querySelector('input');
+        if (input.value === '' && optionFields.length > 2 && field !== lastField) {
+          const nextField = optionFields[index + 1];
+          field.remove();
+          updateOptionFields();
+          if (nextField) {
+            nextField.querySelector('input').focus();
+          } else if (index > 0) {
+            optionFields[index - 1].querySelector('input').focus();
+          }
+        }
+      });
+
+      const optionFieldsUpdated = pollOptions.querySelectorAll('.poll-option');
+
+      if (lastInput.value !== '' && optionFieldsUpdated.length < maxOptions) {
+        addOptionField(optionFields.length);
+      }
+
+      updateOptionFields();
+    }
+
+    pollOptions.addEventListener('input', handleInput);
+    pollOptions.addEventListener('change', handleInput);
+
+    form.addEventListener('reset', function(event) {
+        pollOptions.innerHTML = initialPollOptionsState;
+    });
+
+    updateOptionFields();
+  });
+</script>

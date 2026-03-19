@@ -63,6 +63,14 @@ public class StatusService extends BaseService<StatusEntity> {
 			data.put("media_ids", status.media.stream().map((media) -> media.id).toList());
 		}
 
+		if (status.poll != null) {
+			var pollData = new HashMap<String, Object>();
+			pollData.put("options", status.poll.options);
+			pollData.put("expires_in", status.poll.expiresIn);
+			pollData.put("multiple", status.poll.multiple);
+			data.put("poll", pollData);
+		}
+
 		if (status.group.threaded) {
 			var prev = statusRepository //
 					.findTopByGroupAndDateBeforeAndIdIsNotNullOrderByDateDesc(status.group, status.date);

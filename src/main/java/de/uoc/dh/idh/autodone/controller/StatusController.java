@@ -5,6 +5,7 @@ import static de.uoc.dh.idh.autodone.utils.ObjectUtils.mapFields;
 import static de.uoc.dh.idh.autodone.utils.WebUtils.href;
 import static java.util.Map.of;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import de.uoc.dh.idh.autodone.entities.MediaEntity;
+import de.uoc.dh.idh.autodone.entities.PollEntity;
 import de.uoc.dh.idh.autodone.entities.StatusEntity;
 import de.uoc.dh.idh.autodone.services.GroupService;
 import de.uoc.dh.idh.autodone.services.MediaService;
@@ -48,13 +50,21 @@ public class StatusController {
 	@GetMapping()
 	public String get(Model model, @RequestParam() Map<String, String> params) {
 		if (params.containsKey("uuid")) {
+			MediaEntity mediaEntity = new MediaEntity();
+			PollEntity pollEntity = new PollEntity();
+			pollEntity.options = new ArrayList<>();
+
 			var status = statusService.getOne(params.get("uuid"));
-			var media = mapFields(of("status", status), new MediaEntity());
+			var media = mapFields(of("status", status), mediaEntity);
+			var poll = mapFields(of("status", status), pollEntity);
 			var page = mediaService.getPage(params.get("page"), params.get("sort"), status);
+			var statusPoll = status.poll;
 
 			model.addAttribute("status", status);
 			model.addAttribute("media", media);
+			model.addAttribute("poll", poll);
 			model.addAttribute("page", page);
+			model.addAttribute("statusPoll", statusPoll);
 			return "entity/status";
 		} else {
 			var status = new StatusEntity();

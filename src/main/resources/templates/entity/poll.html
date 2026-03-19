@@ -1,0 +1,31 @@
+<!doctype html>
+<html class="h-100">
+
+<th:block th:insert="~{elements/head}" th:with="title=|poll details|" />
+
+<body class="h-100 d-flex flex-column">
+  <th:block th:insert="~{elements/navbar}" />
+
+  <main class="flex-grow-1 container">
+    <h1>Poll</h1>
+
+    <div class="mb-3 accordion" id="accordion">
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <button class="accordion-button fw-bold" data-bs-target="#fold-1" data-bs-toggle="collapse">
+            Poll Details
+          </button>
+        </div>
+        <div class="accordion-collapse collapse show" id="fold-1" data-bs-parent="#accordion">
+          <div class="accordion-body">
+            <th:block th:insert="~{forms/poll}" th:with="action=@{/poll}" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <th:block th:insert="~{elements/navend}" />
+</body>
+
+</html>

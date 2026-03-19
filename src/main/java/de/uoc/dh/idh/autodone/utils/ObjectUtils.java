@@ -6,6 +6,8 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 
+import jakarta.persistence.Entity;
+
 @Component()
 public class ObjectUtils {
 
@@ -40,6 +42,10 @@ public class ObjectUtils {
 						if (sourceValue != null) {
 							if ((flags & CONVERT) == CONVERT) {
 								sourceValue = conversionService.convert(sourceValue, field.getType());
+							}
+
+							if (field.getType().getAnnotation(Entity.class) != null) {
+								sourceValue = copyFields(sourceValue, targetValue, flags);
 							}
 
 							if (field.getType().equals(String.class) && (flags & TRIM_NULL) == TRIM_NULL) {

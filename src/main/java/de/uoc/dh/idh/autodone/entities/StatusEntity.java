@@ -17,6 +17,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Transient;
 import lombok.Data;
 
@@ -36,6 +37,9 @@ public class StatusEntity {
 
 	@OneToMany(cascade = ALL, fetch = LAZY, mappedBy = "status")
 	public List<MediaEntity> media;
+
+	@OneToOne(cascade = ALL, fetch = LAZY, mappedBy = "status", orphanRemoval = true)
+	public PollEntity poll;
 
 	//
 

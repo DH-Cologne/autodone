@@ -25,18 +25,34 @@
           </div>
         </div>
       </div>
-      <div class="accordion-item">
-        <div class="accordion-header">
-          <button class="accordion-button collapsed fw-bold" data-bs-target="#fold-2" data-bs-toggle="collapse">
-            Add new Media
-          </button>
-        </div>
-        <div class="accordion-collapse collapse" id="fold-2" data-bs-parent="#accordion">
-          <div class="accordion-body">
-            <th:block th:insert="~{forms/media}" th:with="action=@{/media}" />
+      <th:block th:if="${statusPoll == null}">
+        <div class="accordion-item">
+          <div class="accordion-header">
+            <button class="accordion-button collapsed fw-bold" data-bs-target="#fold-2" data-bs-toggle="collapse">
+              Add new Media
+            </button>
+          </div>
+          <div class="accordion-collapse collapse" id="fold-2" data-bs-parent="#accordion">
+            <div class="accordion-body">
+              <th:block th:insert="~{forms/media}" th:with="action=@{/media}" />
+            </div>
           </div>
         </div>
-      </div>
+      </th:block>
+      <th:block th:if="${statusPoll == null && !page.hasContent()}">
+        <div class="accordion-item">
+          <div class="accordion-header">
+            <button class="accordion-button collapsed fw-bold" data-bs-target="#fold-3" data-bs-toggle="collapse">
+              Add Poll
+            </button>
+          </div>
+          <div class="accordion-collapse collapse" id="fold-3" data-bs-parent="#accordion">
+            <div class="accordion-body">
+              <th:block th:insert="~{forms/poll}" th:with="action=@{/poll}" />
+            </div>
+          </div>
+        </div>
+      </th:block>
     </div>
 
     <th:block th:if="${page.hasContent()}">
@@ -46,6 +62,11 @@
       </h2>
       <th:block th:insert="~{tables/media}" />
       <th:block th:if="${page.totalPages} > 1" th:insert="~{elements/pager}" />
+    </th:block>
+
+    <th:block th:if="${statusPoll != null}">
+      <h2>Poll</h2>
+      <th:block th:insert="~{tables/poll}" />
     </th:block>
   </main>
 
