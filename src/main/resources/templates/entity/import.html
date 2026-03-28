@@ -93,14 +93,14 @@
           <thead>
             <tr>
               <th>Status</th>
-              <th>Date (UTC)</th>
+              <th>Date</th>
               <th class="text-end">Media</th>
             </tr>
           </thead>
           <tbody>
             <tr th:classappend="${status.exceptions.size()} ? 'table-warning'" th:each="status : ${page}">
               <td th:text="${status.status}"></td>
-              <td th:text="${status.date}"></td>
+              <td th:text="*{#temporals.format(status.date, 'dd.MM.yyyy HH:mm', 'Europe/Berlin')}"></td>
               <td th:text="${status.media.size()}" class="text-end"></td>
             </tr>
           </tbody>

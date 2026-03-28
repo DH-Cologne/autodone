@@ -4,7 +4,7 @@
       <tr>
         <th th:if="${#path} == '/status'">Group</th>
         <th>Status</th>
-        <th>Date (UTC)</th>
+        <th>Date</th>
         <th class="text-center">Scheduling</th>
         <th class="text-end">Media</th>
         <th class="text-end">Actions</th>
@@ -14,7 +14,7 @@
       <tr th:each="status : ${page}" th:object="${status}">
         <td th:if="${#path} == '/status'" th:text="*{#strings.abbreviate(group.name, 50)}"></td>
         <td th:text="*{status}"></td>
-        <td th:text="*{date}"></td>
+        <td th:text="*{#temporals.format(date, 'dd.MM.yyyy HH:mm', 'Europe/Berlin')}"></td>
         <td class="text-center">
           <i th:if="*{id}" class="bi bi-check-lg"></i>
           <th:block th:if="*{group.enabled}" th:unless="*{id}">
