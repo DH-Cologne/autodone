@@ -63,6 +63,11 @@ public class StatusService extends BaseService<StatusEntity> {
 			data.put("media_ids", status.media.stream().map((media) -> media.id).toList());
 		}
 
+		if (status.contentWarning != null) {
+			data.put("sensitive", true);
+			data.put("spoiler_text", status.contentWarning);
+		}
+
 		if (status.group.threaded) {
 			var prev = statusRepository //
 					.findTopByGroupAndDateBeforeAndIdIsNotNullOrderByDateDesc(status.group, status.date);

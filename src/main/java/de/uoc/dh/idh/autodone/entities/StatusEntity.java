@@ -48,6 +48,9 @@ public class StatusEntity {
 	@Column(nullable = false, length = 500)
 	public String status;
 
+	@Column(length = 500)
+	public String contentWarning;
+
 	//
 
 	@Transient()

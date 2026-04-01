@@ -35,6 +35,26 @@
         <label class="form-label">Content for the Status</label>
       </div>
     </div>
+    <div class="accordion mb-3" id="advanced-options-accordion">
+      <div class="accordion-item">
+      <h2 class="accordion-header" id="heading-advanced-options">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-advanced-options" aria-expanded="false" aria-controls="collapse-advanced-options">
+          Advanced Options
+        </button>
+      </h2>
+      <div id="collapse-advanced-options" class="accordion-collapse collapse" aria-labelledby="heading-advanced-options" data-bs-parent="#advanced-options-accordion">
+        <div class="accordion-body">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold" for="content-warning">Status Content Warning</label>
+          <div class="form-floating">
+            <textarea placeholder th:field="*{contentWarning}" class="form-control" maxlength="500"></textarea>
+            <label class="form-label">Content Warning for the Status</label>
+          </div>
+        </div>
+        </div>
+      </div>
+      </div>
+    </div>
   </div>
   <div class="accordion-footer d-flex flex-row-reverse">
     <button th:text="*{uuid} ? 'Update' : 'Create'" class="btn btn-outline-primary"></button>
